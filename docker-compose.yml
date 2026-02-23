@@ -44,6 +44,7 @@ services:
     restart: unless-stopped
     ports:
       - "3005:8086"
+    command: ["fastmcp", "run", "fastmcp-http.json"]
     environment:
       HOMEASSISTANT_URL: ${HA_URL}
       HOMEASSISTANT_TOKEN: ${HA_TOKEN}
