@@ -26,7 +26,7 @@ scrape_configs:
     metrics_path: /pve
     params:
       target:
-        - 192.168.1.100  # TODO: replace with your Proxmox host IP
+        - 192.168.1.51
       cluster:
         - "1"
       node:
