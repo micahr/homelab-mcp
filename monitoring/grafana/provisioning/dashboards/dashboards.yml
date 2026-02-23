@@ -8,7 +8,7 @@ providers:
     disableDeletion: false
     editable: true
     options:
-      path: /var/lib/grafana/dashboards
+      path: /etc/grafana/provisioning/dashboards/json
       foldersFromFilesStructure: false
 
 # Pre-built dashboards to import from grafana.com:

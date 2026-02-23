@@ -47,17 +47,11 @@ services:
       HOMEASSISTANT_TOKEN: ${HA_TOKEN}
 
   arr-mcp:
-    image: supercorp/supergateway
+    build: ./arr-mcp
     container_name: arr-mcp
     restart: unless-stopped
     ports:
       - "3006:8000"
-    command:
-      - --streamableHttp
-      - --port
-      - "8000"
-      - --stdio
-      - "npx -y mcp-arr-server"
     environment:
       SONARR_URL: ${SONARR_URL}
       SONARR_API_KEY: ${SONARR_API_KEY}
@@ -67,17 +61,11 @@ services:
       PROWLARR_API_KEY: ${PROWLARR_API_KEY}
 
   pihole-mcp:
-    image: supercorp/supergateway
+    build: ./pihole-mcp
     container_name: pihole-mcp
     restart: unless-stopped
     ports:
       - "3007:8000"
-    command:
-      - --streamableHttp
-      - --port
-      - "8000"
-      - --stdio
-      - "npx -y mcp-pihole-server"
     environment:
       PIHOLE_URL: ${PIHOLE_URL}
       PIHOLE_PASSWORD: ${PIHOLE_PASSWORD}
