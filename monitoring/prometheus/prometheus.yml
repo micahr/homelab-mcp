@@ -1,0 +1,47 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - alerting_rules.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+scrape_configs:
+  # Local node-exporter (this LXC)
+  - job_name: node-exporter
+    static_configs:
+      - targets:
+          - node-exporter:9100
+
+  # Proxmox VE via pve-exporter
+  - job_name: pve
+    static_configs:
+      - targets:
+          - pve-exporter:9221
+    metrics_path: /pve
+    params:
+      target:
+        - 192.168.1.100  # TODO: replace with your Proxmox host IP
+      cluster:
+        - "1"
+      node:
+        - "1"
+
+  # Additional node-exporters on other hosts
+  # Uncomment and add IPs for each VM/LXC running node-exporter
+  # - job_name: node-exporters
+  #   static_configs:
+  #     - targets:
+  #         - 192.168.1.101:9100  # example VM
+  #         - 192.168.1.102:9100  # example LXC
+
+  # UniFi metrics via unpoller
+  - job_name: unpoller
+    static_configs:
+      - targets:
+          - unpoller:9130

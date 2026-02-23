@@ -1,0 +1,145 @@
+{
+  "name": "VM Auto-Restart",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vm-down",
+        "responseMode": "onReceived"
+      },
+      "name": "Alertmanager Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "alertname",
+              "value": "={{ $json.alerts[0].labels.alertname }}"
+            },
+            {
+              "name": "instance",
+              "value": "={{ $json.alerts[0].labels.instance }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.alerts[0].status }}"
+            },
+            {
+              "name": "vmid",
+              "value": "={{ $json.alerts[0].labels.vmid }}"
+            },
+            {
+              "name": "node",
+              "value": "={{ $json.alerts[0].labels.node }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Extract Alert Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "value2": "firing"
+            }
+          ]
+        }
+      },
+      "name": "Is Firing?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $env.PROXMOX_HOST }}/api2/json/nodes/{{ $json.node }}/qemu/{{ $json.vmid }}/status/start",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "timeout": 30000
+        },
+        "retry": {
+          "maxTries": 3,
+          "retryInterval": 5000
+        }
+      },
+      "name": "Start VM via Proxmox API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [910, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.HA_URL }}/api/services/notify/mobile_app_{{ $env.HA_NOTIFY_DEVICE }}",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "body": {
+          "title": "VM Auto-Restarted",
+          "message": "VM {{ $node['Extract Alert Fields'].json.vmid }} on {{ $node['Extract Alert Fields'].json.node }} was automatically restarted."
+        },
+        "options": {}
+      },
+      "name": "Notify HA - Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1130, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.HA_URL }}/api/services/notify/mobile_app_{{ $env.HA_NOTIFY_DEVICE }}",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "body": {
+          "title": "VM Restart Failed",
+          "message": "Failed to restart VM {{ $node['Extract Alert Fields'].json.vmid }} on {{ $node['Extract Alert Fields'].json.node }} after retries. Manual intervention required."
+        },
+        "options": {}
+      },
+      "name": "Notify HA - Failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1130, 400]
+    }
+  ],
+  "connections": {
+    "Alertmanager Webhook": {
+      "main": [
+        [{ "node": "Extract Alert Fields", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Alert Fields": {
+      "main": [
+        [{ "node": "Is Firing?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Is Firing?": {
+      "main": [
+        [{ "node": "Start VM via Proxmox API", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Start VM via Proxmox API": {
+      "main": [
+        [{ "node": "Notify HA - Success", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": ""
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "name": "Docker Container Restart (Unraid)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "minutes", "minutesInterval": 5 }]
+        }
+      },
+      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.UNRAID_API_URL }}/graphql",
+        "method": "POST",
+        "body": {
+          "query": "{ dockerContainers { name status image } }"
+        },
+        "headers": {
+          "Authorization": "Bearer {{ $env.UNRAID_API_KEY }}",
+          "Content-Type": "application/json"
+        },
+        "options": {}
+      },
+      "name": "Query Unraid Containers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const containers = $input.first().json.data.dockerContainers || [];\nconst stopped = containers.filter(c => c.status !== 'running');\nreturn stopped.map(c => ({ json: c }));"
+      },
+      "name": "Filter Stopped",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.UNRAID_API_URL }}/graphql",
+        "method": "POST",
+        "body": {
+          "query": "mutation { dockerContainerStart(name: \"{{ $json.name }}\") { success } }"
+        },
+        "headers": {
+          "Authorization": "Bearer {{ $env.UNRAID_API_KEY }}",
+          "Content-Type": "application/json"
+        },
+        "options": {}
+      },
+      "name": "Restart Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.HA_URL }}/api/services/notify/mobile_app_{{ $env.HA_NOTIFY_DEVICE }}",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "body": {
+          "title": "Docker Container Restarted",
+          "message": "Container {{ $json.name }} was found stopped on Unraid and restarted."
+        },
+        "options": {}
+      },
+      "name": "Notify HA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1130, 300]
+    }
+  ],
+  "connections": {
+    "Every 5 Minutes": {
+      "main": [
+        [{ "node": "Query Unraid Containers", "type": "main", "index": 0 }]
+      ]
+    },
+    "Query Unraid Containers": {
+      "main": [
+        [{ "node": "Filter Stopped", "type": "main", "index": 0 }]
+      ]
+    },
+    "Filter Stopped": {
+      "main": [
+        [{ "node": "Restart Container", "type": "main", "index": 0 }]
+      ]
+    },
+    "Restart Container": {
+      "main": [
+        [{ "node": "Notify HA", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": ""
+  }
+}

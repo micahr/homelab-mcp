@@ -1,0 +1,16 @@
+{
+  "name": "immich-poller",
+  "version": "1.0.0",
+  "description": "Polls Immich health and reports to Home Assistant",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.7.0"
+  }
+}

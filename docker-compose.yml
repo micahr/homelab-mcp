@@ -1,0 +1,211 @@
+services:
+  # ── MCP Servers ─────────────────────────────────────────────────
+
+  proxmox-mcp:
+    build: https://github.com/bsahane/mcp-proxmox.git
+    container_name: proxmox-mcp
+    restart: unless-stopped
+    ports:
+      - "3001:8000"
+    environment:
+      PROXMOX_HOST: ${PROXMOX_HOST}
+      PROXMOX_TOKEN_ID: ${PROXMOX_TOKEN_ID}
+      PROXMOX_TOKEN_SECRET: ${PROXMOX_TOKEN_SECRET}
+      PROXMOX_VERIFY_SSL: ${PROXMOX_VERIFY_SSL:-false}
+
+  unraid-mcp:
+    image: jmagar/unraid-mcp:latest
+    container_name: unraid-mcp
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    environment:
+      UNRAID_API_URL: ${UNRAID_API_URL}
+      UNRAID_API_KEY: ${UNRAID_API_KEY}
+      UNRAID_MCP_TRANSPORT: streamable-http
+
+  unifi-mcp:
+    image: ghcr.io/sirkirby/unifi-network-mcp:latest
+    container_name: unifi-mcp
+    restart: unless-stopped
+    ports:
+      - "3003:3000"
+    environment:
+      UNIFI_HOST: ${UNIFI_HOST}
+      UNIFI_USERNAME: ${UNIFI_USERNAME}
+      UNIFI_PASSWORD: ${UNIFI_PASSWORD}
+      UNIFI_PORT: ${UNIFI_PORT:-443}
+      UNIFI_SITE: ${UNIFI_SITE:-default}
+
+  ha-mcp:
+    image: homeassistant-ai/ha-mcp:latest
+    container_name: ha-mcp
+    restart: unless-stopped
+    ports:
+      - "3005:8086"
+    environment:
+      HOMEASSISTANT_URL: ${HA_URL}
+      HOMEASSISTANT_TOKEN: ${HA_TOKEN}
+
+  arr-mcp:
+    image: supercorp/supergateway
+    container_name: arr-mcp
+    restart: unless-stopped
+    ports:
+      - "3006:8000"
+    command:
+      - --streamableHttp
+      - --port
+      - "8000"
+      - --stdio
+      - "npx -y mcp-arr-server"
+    environment:
+      SONARR_URL: ${SONARR_URL}
+      SONARR_API_KEY: ${SONARR_API_KEY}
+      RADARR_URL: ${RADARR_URL}
+      RADARR_API_KEY: ${RADARR_API_KEY}
+      PROWLARR_URL: ${PROWLARR_URL}
+      PROWLARR_API_KEY: ${PROWLARR_API_KEY}
+
+  pihole-mcp:
+    image: supercorp/supergateway
+    container_name: pihole-mcp
+    restart: unless-stopped
+    ports:
+      - "3007:8000"
+    command:
+      - --streamableHttp
+      - --port
+      - "8000"
+      - --stdio
+      - "npx -y mcp-pihole-server"
+    environment:
+      PIHOLE_URL: ${PIHOLE_URL}
+      PIHOLE_PASSWORD: ${PIHOLE_PASSWORD}
+
+  # ── Monitoring Stack ────────────────────────────────────────────
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/alerting_rules.yml:/etc/prometheus/alerting_rules.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=30d
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+
+  pve-exporter:
+    image: prompve/prometheus-pve-exporter:latest
+    container_name: pve-exporter
+    restart: unless-stopped
+    ports:
+      - "9221:9221"
+    environment:
+      PVE_USER: ${PROXMOX_TOKEN_ID}
+      PVE_TOKEN_NAME: ${PVE_TOKEN_NAME}
+      PVE_TOKEN_VALUE: ${PROXMOX_TOKEN_SECRET}
+      PVE_VERIFY_SSL: ${PROXMOX_VERIFY_SSL:-false}
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/rootfs
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+
+  unpoller:
+    image: ghcr.io/unpoller/unpoller:latest
+    container_name: unpoller
+    restart: unless-stopped
+    ports:
+      - "9130:9130"
+    environment:
+      UP_UNIFI_DEFAULT_URL: ${UNIFI_HOST}
+      UP_UNIFI_DEFAULT_USER: ${UNIFI_USERNAME}
+      UP_UNIFI_DEFAULT_PASS: ${UNIFI_PASSWORD}
+      UP_UNIFI_DEFAULT_VERIFY_SSL: "false"
+      UP_PROMETHEUS_DISABLE: "false"
+      UP_PROMETHEUS_HTTP_LISTEN: "0.0.0.0:9130"
+      UP_INFLUXDB_DISABLE: "true"
+
+  # ── Custom Services ─────────────────────────────────────────────
+
+  alert-bridge:
+    build: ./alert-bridge
+    container_name: alert-bridge
+    restart: unless-stopped
+    ports:
+      - "3004:3004"
+    environment:
+      HA_URL: ${HA_URL}
+      HA_TOKEN: ${HA_TOKEN}
+      HA_NOTIFY_DEVICE: ${HA_NOTIFY_DEVICE}
+      PORT: "3004"
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: ${N8N_USER:-admin}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_PASSWORD:-admin}
+      WEBHOOK_URL: http://${LXC_IP:-localhost}:5678/
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/workflows:ro
+
+  immich-poller:
+    build: ./immich-poller
+    container_name: immich-poller
+    restart: unless-stopped
+    environment:
+      IMMICH_URL: ${IMMICH_URL}
+      IMMICH_API_KEY: ${IMMICH_API_KEY}
+      HA_URL: ${HA_URL}
+      HA_TOKEN: ${HA_TOKEN}
+      HA_NOTIFY_DEVICE: ${HA_NOTIFY_DEVICE}
+      POLL_INTERVAL_SECONDS: "300"
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  n8n_data:

@@ -1,0 +1,20 @@
+{
+  "name": "alert-bridge",
+  "version": "1.0.0",
+  "description": "Translates Alertmanager webhooks to Home Assistant notifications",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.7.0"
+  }
+}

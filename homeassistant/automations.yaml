@@ -1,0 +1,93 @@
+# ── VM Unavailable Notification ────────────────────────────────
+- id: vm_unavailable_notification
+  alias: "Notify when a tracked VM goes unavailable"
+  description: "Fires when any Proxmox VE integration entity becomes unavailable"
+  triggers:
+    - trigger: state
+      entity_id:
+        # TODO: replace with your actual Proxmox VE integration entities
+        - binary_sensor.pve_vm_100_running
+        - binary_sensor.pve_vm_101_running
+        - binary_sensor.pve_vm_102_running
+      to: "unavailable"
+      for:
+        minutes: 1
+  actions:
+    - action: notify.mobile_app_{{ notify_device }}
+      data:
+        title: "VM Unavailable"
+        message: "{{ trigger.to_state.attributes.friendly_name }} is unavailable."
+        data:
+          tag: "vm-{{ trigger.entity_id }}"
+          priority: high
+
+# ── WAN Down Notification ─────────────────────────────────────
+- id: wan_down_notification
+  alias: "Notify when WAN goes down"
+  description: "Triggers when UniFi WAN sensor goes offline, optionally restarts router"
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.unifi_wan_status
+      # TODO: replace with your actual UniFi WAN sensor entity
+      to: "off"
+      for:
+        minutes: 2
+  actions:
+    - action: notify.mobile_app_{{ notify_device }}
+      data:
+        title: "WAN Down"
+        message: "Internet connection has been down for 2 minutes."
+        data:
+          priority: high
+    - wait_for_trigger:
+        - trigger: state
+          entity_id: binary_sensor.unifi_wan_status
+          to: "on"
+      timeout:
+        minutes: 10
+      continue_on_timeout: true
+    - if:
+        - condition: state
+          entity_id: binary_sensor.unifi_wan_status
+          state: "off"
+      then:
+        - action: notify.mobile_app_{{ notify_device }}
+          data:
+            title: "WAN Still Down"
+            message: "Internet has been down for 12+ minutes. Consider restarting the router."
+        # Uncomment to auto-restart router via switch entity:
+        # - action: switch.turn_off
+        #   target:
+        #     entity_id: switch.router_power
+        # - delay:
+        #     seconds: 30
+        # - action: switch.turn_on
+        #   target:
+        #     entity_id: switch.router_power
+
+# ── Daily Summary Notification ────────────────────────────────
+- id: daily_homelab_summary
+  alias: "Daily homelab summary at 8am"
+  description: "Sends a morning summary of homelab status"
+  triggers:
+    - trigger: time
+      at: "08:00:00"
+  actions:
+    - action: notify.mobile_app_{{ notify_device }}
+      data:
+        title: "Homelab Daily Summary"
+        message: >-
+          VMs: {{ states.binary_sensor
+            | selectattr('entity_id', 'match', 'binary_sensor.pve_vm_')
+            | selectattr('state', 'eq', 'on')
+            | list | count }} running.
+          {% set degraded = states.binary_sensor
+            | selectattr('entity_id', 'match', 'binary_sensor.pve_node_')
+            | rejectattr('state', 'eq', 'on')
+            | list %}
+          {% if degraded | count > 0 %}
+          Degraded nodes: {{ degraded | map(attribute='name') | join(', ') }}.
+          {% else %}
+          All nodes healthy.
+          {% endif %}
+          Immich: {{ states('sensor.immich_health') | default('unknown') }}.

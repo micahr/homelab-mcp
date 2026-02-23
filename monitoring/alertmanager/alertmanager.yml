@@ -1,0 +1,16 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: alert-bridge
+  group_by:
+    - alertname
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: alert-bridge
+    webhook_configs:
+      - url: http://alert-bridge:3004/webhook
+        send_resolved: true

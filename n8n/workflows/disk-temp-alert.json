@@ -1,0 +1,81 @@
+{
+  "name": "Disk Temp Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "disk-temp",
+        "responseMode": "onReceived"
+      },
+      "name": "Alertmanager Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "alertname",
+              "value": "={{ $json.alerts[0].labels.alertname }}"
+            },
+            {
+              "name": "disk",
+              "value": "={{ $json.alerts[0].labels.disk || $json.alerts[0].labels.device || 'unknown' }}"
+            },
+            {
+              "name": "instance",
+              "value": "={{ $json.alerts[0].labels.instance }}"
+            },
+            {
+              "name": "temperature",
+              "value": "={{ $json.alerts[0].annotations.temperature || $json.alerts[0].annotations.description }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.alerts[0].status }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Extract Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.HA_URL }}/api/services/notify/mobile_app_{{ $env.HA_NOTIFY_DEVICE }}",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "body": {
+          "title": "Disk Temperature Alert",
+          "message": "Disk {{ $json.disk }} on {{ $json.instance }} — {{ $json.temperature }}"
+        },
+        "options": {}
+      },
+      "name": "Notify HA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [690, 300]
+    }
+  ],
+  "connections": {
+    "Alertmanager Webhook": {
+      "main": [
+        [{ "node": "Extract Fields", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Fields": {
+      "main": [
+        [{ "node": "Notify HA", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": ""
+  }
+}
