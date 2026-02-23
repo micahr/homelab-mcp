@@ -38,7 +38,7 @@ services:
       UNIFI_SITE: ${UNIFI_SITE:-default}
 
   ha-mcp:
-    image: homeassistant-ai/ha-mcp:latest
+    image: ghcr.io/homeassistant-ai/ha-mcp:latest
     container_name: ha-mcp
     restart: unless-stopped
     ports:
