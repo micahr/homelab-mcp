@@ -14,7 +14,7 @@ services:
       PROXMOX_VERIFY_SSL: ${PROXMOX_VERIFY_SSL:-false}
 
   unraid-mcp:
-    build: https://github.com/jmagar/unraid-mcp.git
+    build: ./unraid-mcp
     container_name: unraid-mcp
     restart: unless-stopped
     ports:
@@ -22,7 +22,6 @@ services:
     environment:
       UNRAID_API_URL: ${UNRAID_API_URL}
       UNRAID_API_KEY: ${UNRAID_API_KEY}
-      UNRAID_MCP_TRANSPORT: streamable-http
 
   unifi-mcp:
     image: ghcr.io/sirkirby/unifi-network-mcp:latest
