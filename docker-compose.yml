@@ -115,7 +115,7 @@ services:
     ports:
       - "9221:9221"
     environment:
-      PVE_USER: ${PROXMOX_TOKEN_ID}
+      PVE_USER: ${PVE_USER}
       PVE_TOKEN_NAME: ${PVE_TOKEN_NAME}
       PVE_TOKEN_VALUE: ${PROXMOX_TOKEN_SECRET}
       PVE_VERIFY_SSL: ${PROXMOX_VERIFY_SSL:-false}
