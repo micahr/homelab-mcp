@@ -14,11 +14,11 @@ services:
       PROXMOX_VERIFY_SSL: ${PROXMOX_VERIFY_SSL:-false}
 
   unraid-mcp:
-    image: jmagar/unraid-mcp:latest
+    build: https://github.com/jmagar/unraid-mcp.git
     container_name: unraid-mcp
     restart: unless-stopped
     ports:
-      - "3002:3000"
+      - "3002:6970"
     environment:
       UNRAID_API_URL: ${UNRAID_API_URL}
       UNRAID_API_KEY: ${UNRAID_API_KEY}
