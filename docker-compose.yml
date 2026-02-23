@@ -35,6 +35,8 @@ services:
       UNIFI_PASSWORD: ${UNIFI_PASSWORD}
       UNIFI_PORT: ${UNIFI_PORT:-443}
       UNIFI_SITE: ${UNIFI_SITE:-default}
+      UNIFI_MCP_HTTP_ENABLED: "true"
+      UNIFI_MCP_HTTP_FORCE: "true"
 
   ha-mcp:
     image: ghcr.io/homeassistant-ai/ha-mcp:latest
@@ -143,7 +145,7 @@ services:
     ports:
       - "9130:9130"
     environment:
-      UP_UNIFI_DEFAULT_URL: ${UNIFI_HOST}
+      UP_UNIFI_DEFAULT_URL: https://${UNIFI_HOST}
       UP_UNIFI_DEFAULT_USER: ${UNIFI_USERNAME}
       UP_UNIFI_DEFAULT_PASS: ${UNIFI_PASSWORD}
       UP_UNIFI_DEFAULT_VERIFY_SSL: "false"
