@@ -5,4 +5,4 @@ EXPOSE 6970
 ENV UNRAID_MCP_HOST=0.0.0.0
 ENV UNRAID_MCP_PORT=6970
 ENV UNRAID_MCP_TRANSPORT=streamable-http
-CMD ["python", "-m", "unraid_mcp"]
+CMD ["unraid-mcp-server"]

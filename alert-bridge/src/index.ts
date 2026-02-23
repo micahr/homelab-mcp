@@ -40,7 +40,10 @@ async function notifyHA(title: string, message: string): Promise<void> {
   });
 
   if (!res.ok) {
-    console.error(`HA notify failed (${res.status}): ${await res.text()}`);
+    const body = await res.text();
+    console.error(`HA notify failed (${res.status}): ${body}`);
+    console.error(`  URL: ${url}`);
+    console.error(`  Payload: ${JSON.stringify({ title, message })}`);
   }
 }
 
