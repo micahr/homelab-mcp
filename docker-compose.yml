@@ -2,7 +2,7 @@ services:
   # ── MCP Servers ─────────────────────────────────────────────────
 
   proxmox-mcp:
-    build: https://github.com/bsahane/mcp-proxmox.git
+    build: ./proxmox-mcp
     container_name: proxmox-mcp
     restart: unless-stopped
     ports:
