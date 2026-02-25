@@ -37,6 +37,8 @@ services:
       UNIFI_SITE: ${UNIFI_SITE:-default}
       UNIFI_MCP_HTTP_ENABLED: "true"
       UNIFI_MCP_HTTP_FORCE: "true"
+      UNIFI_MCP_ENABLE_DNS_REBINDING_PROTECTION: "false"
+      UNIFI_MCP_ALLOWED_HOSTS: "localhost,127.0.0.1,${LXC_IP},0.0.0.0"
 
   ha-mcp:
     image: ghcr.io/homeassistant-ai/ha-mcp:latest

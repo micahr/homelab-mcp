@@ -1,22 +1,28 @@
 {
   "mcpServers": {
     "proxmox": {
-      "url": "http://192.168.1.51:3001/sse"
+      "type": "sse",
+      "url": "http://192.168.1.70:3001/sse"
     },
     "unraid": {
-      "url": "http://192.168.1.51:3002/mcp"
+      "type": "http",
+      "url": "http://192.168.1.70:3002/mcp"
     },
     "unifi": {
-      "url": "http://192.168.1.51:3003/mcp"
+      "type": "http",
+      "url": "http://192.168.1.70:3003/mcp"
     },
     "home-assistant": {
-      "url": "http://192.168.1.51:3005/mcp"
+      "type": "http",
+      "url": "http://192.168.1.70:3005/mcp"
     },
     "arr": {
-      "url": "http://192.168.1.51:3006/sse"
+      "type": "sse",
+      "url": "http://192.168.1.70:3006/sse"
     },
     "pihole": {
-      "url": "http://192.168.1.51:3007/sse"
+      "type": "sse",
+      "url": "http://192.168.1.70:3007/sse"
     }
   }
 }

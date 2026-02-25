@@ -2,4 +2,4 @@ FROM node:24-alpine
 WORKDIR /app
 RUN npm install mcp-arr-server supergateway
 EXPOSE 8000
-CMD ["npx", "supergateway", "--streamableHttp", "--port", "8000", "--stdio", "node node_modules/mcp-arr-server/dist/index.js"]
+CMD ["npx", "supergateway", "--sse", "--port", "8000", "--stdio", "node node_modules/mcp-arr-server/dist/index.js"]

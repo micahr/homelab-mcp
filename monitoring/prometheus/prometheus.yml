@@ -26,7 +26,7 @@ scrape_configs:
     metrics_path: /pve
     params:
       target:
-        - 192.168.1.51
+        - 192.168.1.70
       cluster:
         - "1"
       node:
