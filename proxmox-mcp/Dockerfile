@@ -5,4 +5,4 @@ RUN pip install --no-cache-dir git+https://github.com/bsahane/mcp-proxmox.git \
     && pip install --no-cache-dir -r https://raw.githubusercontent.com/bsahane/mcp-proxmox/main/requirements.txt
 RUN npm install -g supergateway
 EXPOSE 8000
-CMD ["supergateway", "--streamableHttp", "--port", "8000", "--stdio", "proxmox-mcp"]
+CMD ["supergateway", "--stdio", "proxmox-mcp", "--port", "8000", "--outputTransport", "streamableHttp"]

@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "proxmox": {
-      "type": "sse",
-      "url": "http://192.168.1.70:3001/sse"
+      "type": "http",
+      "url": "http://192.168.1.70:3001/mcp"
     },
     "unraid": {
       "type": "http",
@@ -17,12 +17,12 @@
       "url": "http://192.168.1.70:3005/mcp"
     },
     "arr": {
-      "type": "sse",
-      "url": "http://192.168.1.70:3006/sse"
+      "type": "http",
+      "url": "http://192.168.1.70:3006/mcp"
     },
     "pihole": {
-      "type": "sse",
-      "url": "http://192.168.1.70:3007/sse"
+      "type": "http",
+      "url": "http://192.168.1.70:3007/mcp"
     }
   }
 }
