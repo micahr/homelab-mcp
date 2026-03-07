@@ -91,3 +91,76 @@
           All nodes healthy.
           {% endif %}
           Immich: {{ states('sensor.immich_health') | default('unknown') }}.
+
+# ── BirdNET-Go: Update Latest Detection ──────────────────────
+- id: birdnet_update_latest_detection
+  alias: "BirdNET Update Latest Detection"
+  description: "Updates latest bird detection helpers whenever BirdNET-Go publishes an MQTT detection event"
+  triggers:
+    - trigger: mqtt
+      topic: birdnet/detections
+  actions:
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.birdnet_latest_bird
+      data:
+        value: "{{ trigger.payload_json.CommonName }}"
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.birdnet_latest_scientific_name
+      data:
+        value: "{{ trigger.payload_json.ScientificName }}"
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.birdnet_latest_confidence
+      data:
+        value: "{{ trigger.payload_json.Confidence | round(2) }}"
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.birdnet_latest_camera
+      data:
+        value: "{{ trigger.payload_json.sourceName | default('Unknown') }}"
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.birdnet_latest_detection_time
+      data:
+        value: "{{ trigger.payload_json.Time }}"
+  mode: queued
+  max: 5
+
+# ── BirdNET-Go: Rare Bird Alert ───────────────────────────────
+- id: birdnet_rare_bird_alert
+  alias: "BirdNET Rare Bird Alert"
+  description: "Sends a mobile notification when BirdNET-Go detects a rare bird (confidence > 0.9 and eBird occurrence < 0.1 or absent)"
+  triggers:
+    - trigger: mqtt
+      topic: birdnet/detections
+  conditions:
+    - condition: template
+      value_template: >
+        {{ trigger.payload_json.Confidence | float(0) > 0.9 and
+           trigger.payload_json.occurrence | default(0) | float < 0.1 }}
+  actions:
+    - action: notify.mobile_app_mri_2
+      data:
+        title: "Rare Bird Detected!"
+        message: >
+          {{ trigger.payload_json.CommonName }} ({{ trigger.payload_json.ScientificName }})
+          — {{ (trigger.payload_json.Confidence * 100) | round(1) }}% confidence
+          on {{ trigger.payload_json.sourceName | default('unknown camera') }}
+    - action: notify.mobile_app_mri_3
+      data:
+        title: "Rare Bird Detected!"
+        message: >
+          {{ trigger.payload_json.CommonName }} ({{ trigger.payload_json.ScientificName }})
+          — {{ (trigger.payload_json.Confidence * 100) | round(1) }}% confidence
+          on {{ trigger.payload_json.sourceName | default('unknown camera') }}
+    - action: notify.mobile_app_ati
+      data:
+        title: "Rare Bird Detected!"
+        message: >
+          {{ trigger.payload_json.CommonName }} ({{ trigger.payload_json.ScientificName }})
+          — {{ (trigger.payload_json.Confidence * 100) | round(1) }}% confidence
+          on {{ trigger.payload_json.sourceName | default('unknown camera') }}
+  mode: parallel
+  max: 10

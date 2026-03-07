@@ -1,0 +1,24 @@
+# BirdNET-Go Sensors
+# To use: add `sensor: !include sensors.yaml` to your configuration.yaml
+# (or merge into an existing sensor list)
+
+sensor:
+  # Polls the BirdNET-Go daily analytics API every 15 minutes and surfaces
+  # the species with the fewest detections today for dashboard display.
+  - platform: rest
+    name: "BirdNET Least Seen Bird Today"
+    unique_id: birdnet_least_seen_bird_today
+    resource: "http://192.168.1.70:8080/api/v2/analytics/species/daily"
+    scan_interval: 900
+    value_template: >
+      {% set species = value_json | selectattr('count', 'gt', 0) | list | sort(attribute='count') %}
+      {% if species | length > 0 %}
+        {{ species[0].common_name }}
+      {% else %}
+        None
+      {% endif %}
+    json_attributes_template: >
+      {% set species = value_json | selectattr('count', 'gt', 0) | list | sort(attribute='count') %}
+      {% if species | length > 0 %}
+        {{ [species[0].scientific_name, species[0].count, species[0].first_heard] | list | tojson }}
+      {% endif %}
