@@ -7,14 +7,13 @@ birdnet:
 
 realtime:
   interval: 15
-
-rtsp:
-  urls:
-    - rtsp://192.168.1.50:7447/<driveway-token>       # Driveway
-    - rtsp://192.168.1.50:7447/<primary-sideyard-token>  # Primary Sideyard
-    - rtsp://192.168.1.50:7447/<garage-sideyard-token>   # Garage Sideyard
-    - rtsp://192.168.1.50:7447/<pool-token>              # Pool
-  transport: tcp
+  rtsp:
+    urls:
+      - rtsp://192.168.1.50:7447/<driveway-token>          # Driveway
+      - rtsp://192.168.1.50:7447/<primary-sideyard-token>  # Primary Sideyard
+      - rtsp://192.168.1.50:7447/<garage-sideyard-token>   # Garage Sideyard
+      - rtsp://192.168.1.50:7447/<pool-token>              # Pool
+    transport: tcp
 
 mqtt:
   enabled: true
