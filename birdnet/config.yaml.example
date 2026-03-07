@@ -16,7 +16,9 @@ realtime:
     transport: tcp
   mqtt:
     enabled: true
-    broker: 192.168.1.217:1883
+    broker: tcp://192.168.1.217:1883
+    username: ""
+    password: ""
     topic: birdnet/detections
     retain: false
 
