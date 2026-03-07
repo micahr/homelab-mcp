@@ -141,21 +141,7 @@
         {{ trigger.payload_json.Confidence | float(0) > 0.9 and
            trigger.payload_json.occurrence | default(0) | float < 0.1 }}
   actions:
-    - action: notify.mobile_app_mri_2
-      data:
-        title: "Rare Bird Detected!"
-        message: >
-          {{ trigger.payload_json.CommonName }} ({{ trigger.payload_json.ScientificName }})
-          — {{ (trigger.payload_json.Confidence * 100) | round(1) }}% confidence
-          on {{ trigger.payload_json.sourceName | default('unknown camera') }}
     - action: notify.mobile_app_mri_3
-      data:
-        title: "Rare Bird Detected!"
-        message: >
-          {{ trigger.payload_json.CommonName }} ({{ trigger.payload_json.ScientificName }})
-          — {{ (trigger.payload_json.Confidence * 100) | round(1) }}% confidence
-          on {{ trigger.payload_json.sourceName | default('unknown camera') }}
-    - action: notify.mobile_app_ati
       data:
         title: "Rare Bird Detected!"
         message: >
