@@ -14,15 +14,13 @@ realtime:
       - rtsp://192.168.1.50:7447/<garage-sideyard-token>   # Garage Sideyard
       - rtsp://192.168.1.50:7447/<pool-token>              # Pool
     transport: tcp
+  mqtt:
+    enabled: true
+    broker: 192.168.1.217:1883
+    topic: birdnet/detections
+    retain: false
 
-mqtt:
-  enabled: true
-  broker: 192.168.1.217
-  port: 1883
-  topic: birdnet/detections
-  retain: false
-
-webserver:
+webServer:
   enabled: true
   port: 8080
   log:
