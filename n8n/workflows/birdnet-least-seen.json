@@ -1,0 +1,89 @@
+{
+  "name": "BirdNET Least Seen Bird Today",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "name": "Every 15 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://192.168.1.70:8080/api/v2/analytics/species/daily",
+        "method": "GET",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "name": "Fetch Daily Species",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const species = $input.first().json;\n\nif (!Array.isArray(species) || species.length === 0) {\n  return [{ json: { least_seen: 'None', count: 0, scientific_name: '' } }];\n}\n\nconst detected = species\n  .filter(s => s.count > 0)\n  .sort((a, b) => a.count - b.count);\n\nif (detected.length === 0) {\n  return [{ json: { least_seen: 'None', count: 0, scientific_name: '' } }];\n}\n\nconst least = detected[0];\nreturn [{ json: {\n  least_seen: least.common_name,\n  count: least.count,\n  scientific_name: least.scientific_name\n} }];"
+      },
+      "name": "Find Least Seen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.HA_URL }}/api/services/input_text/set_value",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "entity_id",
+              "value": "input_text.birdnet_least_seen_bird_today"
+            },
+            {
+              "name": "value",
+              "value": "={{ $json.least_seen }} ({{ $json.count }})"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Update HA Sensor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [910, 300]
+    }
+  ],
+  "connections": {
+    "Every 15 Minutes": {
+      "main": [
+        [{ "node": "Fetch Daily Species", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Daily Species": {
+      "main": [
+        [{ "node": "Find Least Seen", "type": "main", "index": 0 }]
+      ]
+    },
+    "Find Least Seen": {
+      "main": [
+        [{ "node": "Update HA Sensor", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": ""
+  }
+}
