@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .env
+birdnet/config.yaml
 .DS_Store
 *.log
 package-lock.json

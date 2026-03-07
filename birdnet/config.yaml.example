@@ -1,0 +1,39 @@
+birdnet:
+  sensitivity: 1.25
+  threshold: 0.75
+  overlap: 0
+  latitude: 40.7128   # set to your location for seasonal species filtering
+  longitude: -74.0060
+
+realtime:
+  interval: 15
+
+rtsp:
+  urls:
+    - rtsp://192.168.1.50:7447/<driveway-token>       # Driveway
+    - rtsp://192.168.1.50:7447/<primary-sideyard-token>  # Primary Sideyard
+    - rtsp://192.168.1.50:7447/<garage-sideyard-token>   # Garage Sideyard
+    - rtsp://192.168.1.50:7447/<pool-token>              # Pool
+  transport: tcp
+
+mqtt:
+  enabled: true
+  broker: 192.168.1.217
+  port: 1883
+  topic: birdnet/detections
+  retain: false
+
+webserver:
+  enabled: true
+  port: 8080
+  log:
+    enabled: true
+
+output:
+  sqlite:
+    enabled: true
+    path: /data/birdnet.db
+  clips:
+    enabled: true
+    path: /data/clips
+    retention: 30
