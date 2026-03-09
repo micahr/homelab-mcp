@@ -32,7 +32,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const species = $input.first().json;\n\nif (!Array.isArray(species) || species.length === 0) {\n  return [{ json: { least_seen: 'None', count: 0, scientific_name: '' } }];\n}\n\nconst detected = species\n  .filter(s => s.count > 0)\n  .sort((a, b) => a.count - b.count);\n\nif (detected.length === 0) {\n  return [{ json: { least_seen: 'None', count: 0, scientific_name: '' } }];\n}\n\nconst least = detected[0];\nreturn [{ json: {\n  least_seen: least.common_name,\n  count: least.count,\n  scientific_name: least.scientific_name\n} }];"
+        "jsCode": "const species = $input.all().map(item => item.json);\n\nif (species.length === 0) {\n  return [{ json: { least_seen: 'None', count: 0, scientific_name: '' } }];\n}\n\nconst detected = species\n  .filter(s => s.count > 0)\n  .sort((a, b) => a.count - b.count);\n\nif (detected.length === 0) {\n  return [{ json: { least_seen: 'None', count: 0, scientific_name: '' } }];\n}\n\nconst least = detected[0];\nreturn [{ json: {\n  least_seen: least.common_name,\n  count: least.count,\n  scientific_name: least.scientific_name\n} }];"
       },
       "name": "Find Least Seen",
       "type": "n8n-nodes-base.code",
