@@ -21,10 +21,6 @@ realtime:
     password: ""
     topic: birdnet/detections
     retain: false
-    homeassistant:
-      enabled: true
-      discovery_prefix: homeassistant
-      device_name: BirdNET-Go
 
 webServer:
   enabled: true
