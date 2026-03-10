@@ -65,6 +65,18 @@ services:
       PROWLARR_URL: ${PROWLARR_URL}
       PROWLARR_API_KEY: ${PROWLARR_API_KEY}
 
+  uptimekuma-mcp:
+    image: davidfuchs/mcp-uptime-kuma:latest
+    container_name: uptimekuma-mcp
+    restart: unless-stopped
+    ports:
+      - "3008:3000"
+    command: ["-t", "streamable-http"]
+    environment:
+      UPTIME_KUMA_URL: ${UPTIME_KUMA_URL}
+      UPTIME_KUMA_USERNAME: ${UPTIME_KUMA_USERNAME}
+      UPTIME_KUMA_PASSWORD: ${UPTIME_KUMA_PASSWORD}
+
   pihole-mcp:
     build: ./pihole-mcp
     container_name: pihole-mcp
