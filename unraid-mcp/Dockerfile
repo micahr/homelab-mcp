@@ -4,4 +4,5 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt-get install
 RUN pip install --no-cache-dir git+https://github.com/jmagar/unraid-mcp.git
 RUN npm install -g supergateway
 EXPOSE 6970
+ENV UNRAID_MCP_TRANSPORT=stdio
 CMD ["supergateway", "--stdio", "unraid-mcp-server", "--port", "6970", "--outputTransport", "streamableHttp"]
