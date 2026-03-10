@@ -11,7 +11,7 @@ services:
       PROXMOX_API_URL: ${PROXMOX_HOST}
       PROXMOX_TOKEN_ID: ${PROXMOX_TOKEN_ID}
       PROXMOX_TOKEN_SECRET: ${PROXMOX_TOKEN_SECRET}
-      PROXMOX_VERIFY_SSL: ${PROXMOX_VERIFY_SSL:-false}
+      PROXMOX_VERIFY: ${PROXMOX_VERIFY_SSL:-false}
 
   unraid-mcp:
     build: ./unraid-mcp
