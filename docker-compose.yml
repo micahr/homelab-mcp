@@ -8,7 +8,7 @@ services:
     ports:
       - "3001:8000"
     environment:
-      PROXMOX_HOST: ${PROXMOX_HOST}
+      PROXMOX_API_URL: ${PROXMOX_HOST}
       PROXMOX_TOKEN_ID: ${PROXMOX_TOKEN_ID}
       PROXMOX_TOKEN_SECRET: ${PROXMOX_TOKEN_SECRET}
       PROXMOX_VERIFY_SSL: ${PROXMOX_VERIFY_SSL:-false}
