@@ -66,7 +66,8 @@ services:
       PROWLARR_API_KEY: ${PROWLARR_API_KEY}
 
   uptimekuma-mcp:
-    image: ghcr.io/lefty3382/uptime-kuma-mcp:latest
+    build:
+      context: https://github.com/lefty3382/uptime-kuma-mcp.git
     container_name: uptimekuma-mcp
     restart: unless-stopped
     ports:
