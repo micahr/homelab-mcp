@@ -27,6 +27,14 @@
     "uptimekuma": {
       "type": "http",
       "url": "http://192.168.1.70:3008/mcp"
+    },
+    "jellyfin": {
+      "type": "http",
+      "url": "http://192.168.1.70:3009/mcp"
+    },
+    "jellyseerr": {
+      "type": "http",
+      "url": "http://192.168.1.70:3010/mcp"
     }
   }
 }
