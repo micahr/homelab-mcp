@@ -9,3 +9,7 @@ package-lock.json
 # Garmin activity downloads / GPX routes (bind-mounted into garmin-mcp)
 garmin-data/*
 !garmin-data/.gitkeep
+
+# Timestamped .env backups contain real credentials
+.env.bak*
+.env.*.bak
