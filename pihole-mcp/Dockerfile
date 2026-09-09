@@ -2,4 +2,4 @@ FROM node:24-alpine
 WORKDIR /app
 RUN npm install mcp-pihole-server supergateway
 EXPOSE 8000
-CMD ["npx", "supergateway", "--stdio", "node node_modules/mcp-pihole-server/dist/index.js", "--port", "8000", "--outputTransport", "streamableHttp", "--stateful", "--sessionTimeout", "600000"]
+CMD ["npx", "supergateway", "--stdio", "node node_modules/mcp-pihole-server/dist/index.js", "--port", "8000", "--outputTransport", "streamableHttp", "--stateful", "--sessionTimeout", "240000"]

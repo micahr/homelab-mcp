@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir git+https://github.com/bsahane/mcp-proxmox.git \
     && pip install --no-cache-dir "mcp<2"
 RUN npm install -g supergateway
 EXPOSE 8000
-CMD ["supergateway", "--stdio", "proxmox-mcp", "--port", "8000", "--outputTransport", "streamableHttp", "--stateful", "--sessionTimeout", "600000"]
+CMD ["supergateway", "--stdio", "proxmox-mcp", "--port", "8000", "--outputTransport", "streamableHttp", "--stateful", "--sessionTimeout", "240000"]

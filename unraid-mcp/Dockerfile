@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir git+https://github.com/udhaya10/unraid-mcp.git
 RUN npm install -g supergateway
 EXPOSE 6970
 ENV UNRAID_MCP_TRANSPORT=stdio
-CMD ["supergateway", "--stdio", "unraid-mcp-server", "--port", "6970", "--outputTransport", "streamableHttp", "--stateful", "--sessionTimeout", "600000"]
+CMD ["supergateway", "--stdio", "unraid-mcp-server", "--port", "6970", "--outputTransport", "streamableHttp", "--stateful", "--sessionTimeout", "240000"]

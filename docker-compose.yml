@@ -4,7 +4,7 @@ services:
   proxmox-mcp:
     build: ./proxmox-mcp
     container_name: proxmox-mcp
-    mem_limit: 512m
+    mem_limit: 1g
     restart: unless-stopped
     ports:
       - "3001:8000"
