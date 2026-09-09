@@ -4,6 +4,7 @@ services:
   proxmox-mcp:
     build: ./proxmox-mcp
     container_name: proxmox-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3001:8000"
@@ -16,6 +17,7 @@ services:
   unraid-mcp:
     build: ./unraid-mcp
     container_name: unraid-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3002:6970"
@@ -26,6 +28,7 @@ services:
   unifi-mcp:
     image: ghcr.io/sirkirby/unifi-network-mcp:latest
     container_name: unifi-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3003:3000"
@@ -44,6 +47,7 @@ services:
   ha-mcp:
     image: ghcr.io/homeassistant-ai/ha-mcp:latest
     container_name: ha-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3005:8086"
@@ -55,6 +59,7 @@ services:
   arr-mcp:
     build: ./arr-mcp
     container_name: arr-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3006:8000"
@@ -71,6 +76,7 @@ services:
     # davidfuchs/mcp-uptime-kuma targets Uptime Kuma v2 (you run 2.2.1).
     image: davidfuchs/mcp-uptime-kuma:latest
     container_name: uptimekuma-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3008:3000"
@@ -83,6 +89,7 @@ services:
   pihole-mcp:
     build: ./pihole-mcp
     container_name: pihole-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3007:8000"
@@ -93,6 +100,7 @@ services:
   jellyfin-mcp:
     build: ./jellyfin-mcp
     container_name: jellyfin-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3009:8000"
@@ -103,6 +111,7 @@ services:
   jellyseerr-mcp:
     build: ./jellyseerr-mcp
     container_name: jellyseerr-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3010:8000"
@@ -114,6 +123,7 @@ services:
   garmin-mcp:
     build: ./garmin-mcp
     container_name: garmin-mcp
+    mem_limit: 512m
     restart: unless-stopped
     ports:
       - "3011:8000"
