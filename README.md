@@ -14,7 +14,10 @@ Full-stack homelab monitoring and automation system running on a single Docker-c
 │  ├── unifi-mcp      :3003  ← sirkirby/unifi-network-mcp│
 │  ├── ha-mcp         :3005  ← homeassistant-ai/ha-mcp   │
 │  ├── arr-mcp        :3006  ← mcp-arr via supergateway  │
-│  └── pihole-mcp     :3007  ← mcp-pihole via supergateway│
+│  ├── pihole-mcp     :3007  ← mcp-pihole via supergateway│
+│  ├── uptimekuma-mcp :3008  ← lefty3382/uptime-kuma-mcp │
+│  ├── jellyfin-mcp   :3009  ← jellyfin-mcp (jellyctrl)  │
+│  └── jellyseerr-mcp :3010  ← aserper/jellyseerr-mcp    │
 │                                                         │
 │  Monitoring                                             │
 │  ├── prometheus      :9090  ← scrapes exporters         │
@@ -56,7 +59,10 @@ Full-stack homelab monitoring and automation system running on a single Docker-c
        "unifi":          { "url": "http://<lxc-ip>:3003/mcp" },
        "home-assistant": { "url": "http://<lxc-ip>:3005/mcp" },
        "arr":            { "url": "http://<lxc-ip>:3006/mcp" },
-       "pihole":         { "url": "http://<lxc-ip>:3007/mcp" }
+       "pihole":         { "url": "http://<lxc-ip>:3007/mcp" },
+       "uptimekuma":     { "url": "http://<lxc-ip>:3008/mcp" },
+       "jellyfin":       { "url": "http://<lxc-ip>:3009/mcp" },
+       "jellyseerr":     { "url": "http://<lxc-ip>:3010/mcp" }
      }
    }
    ```
@@ -83,6 +89,9 @@ Full-stack homelab monitoring and automation system running on a single Docker-c
 | ha-mcp | 3005 | MCP server for Home Assistant |
 | arr-mcp | 3006 | MCP server for Sonarr/Radarr/Prowlarr |
 | pihole-mcp | 3007 | MCP server for Pi-hole DNS |
+| uptimekuma-mcp | 3008 | MCP server for Uptime Kuma |
+| jellyfin-mcp | 3009 | MCP server for Jellyfin (56 tools) |
+| jellyseerr-mcp | 3010 | MCP server for Jellyseerr requests |
 | grafana | 3000 | Dashboards |
 | prometheus | 9090 | Metrics collection |
 | alertmanager | 9093 | Alert routing |

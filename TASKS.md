@@ -15,6 +15,12 @@ Everything runs on a **single Docker-capable LXC on Proxmox** via `docker-compos
 - [x] **Unraid MCP** — adopted [jmagar/unraid-mcp](https://github.com/jmagar/unraid-mcp) (76+ actions), runs on port 3002
 - [x] **UniFi MCP** — adopted [sirkirby/unifi-network-mcp](https://github.com/sirkirby/unifi-network-mcp) (86 tools), runs on port 3003
 - [x] Original custom Proxmox MCP server superseded and removed
+- [x] **Home Assistant MCP** — [homeassistant-ai/ha-mcp](https://github.com/homeassistant-ai/ha-mcp), runs on port 3005
+- [x] **\*arr MCP** — [mcp-arr](https://github.com/aplaceforallmystuff/mcp-arr) for Sonarr/Radarr/Prowlarr, runs on port 3006
+- [x] **Pi-hole MCP** — [mcp-pihole](https://github.com/aplaceforallmystuff/mcp-pihole), runs on port 3007
+- [x] **Uptime Kuma MCP** — [lefty3382/uptime-kuma-mcp](https://github.com/lefty3382/uptime-kuma-mcp), runs on port 3008
+- [x] **Jellyfin MCP** — [jellyfin-mcp](https://github.com/lidless-labs/jellyctrl) (56 tools), runs on port 3009
+- [x] **Jellyseerr MCP** — [aserper/jellyseerr-mcp](https://github.com/aserper/jellyseerr-mcp), runs on port 3010
 
 ### Monitoring Stack
 - [x] **Prometheus** with scrape configs for pve-exporter, node-exporter, unpoller
@@ -62,5 +68,4 @@ Everything runs on a **single Docker-capable LXC on Proxmox** via `docker-compos
 - [ ] Test alert-bridge end-to-end with a test alert
 - [ ] Set up HA long-lived access token for services
 - [ ] Push repo to GitHub
-- [ ] Consider adding Uptime Kuma for external endpoint monitoring
 - [ ] Consider adding Loki for centralized log aggregation

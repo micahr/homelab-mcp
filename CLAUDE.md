@@ -34,6 +34,9 @@ No test runner or linter is configured.
 - **ha-mcp** (port 3005) — [homeassistant-ai/ha-mcp](https://github.com/homeassistant-ai/ha-mcp), Home Assistant control
 - **arr-mcp** (port 3006) — [mcp-arr](https://github.com/aplaceforallmystuff/mcp-arr) via supergateway, Sonarr/Radarr/Prowlarr
 - **pihole-mcp** (port 3007) — [mcp-pihole](https://github.com/aplaceforallmystuff/mcp-pihole) via supergateway, Pi-hole DNS
+- **uptimekuma-mcp** (port 3008) — [lefty3382/uptime-kuma-mcp](https://github.com/lefty3382/uptime-kuma-mcp), uptime monitors
+- **jellyfin-mcp** (port 3009) — [jellyfin-mcp](https://github.com/lidless-labs/jellyctrl) via supergateway, 56 Jellyfin tools
+- **jellyseerr-mcp** (port 3010) — [aserper/jellyseerr-mcp](https://github.com/aserper/jellyseerr-mcp) via supergateway, media requests
 
 Claude Desktop connects to these via `http://<lxc-ip>:<port>/mcp`.
 
