@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN npm install -g supergateway
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
-CMD ["supergateway", "--stdio", "python main.py --transport stdio", "--port", "8000", "--outputTransport", "streamableHttp"]
+CMD ["supergateway", "--stdio", "python main.py --transport stdio", "--port", "8000", "--outputTransport", "streamableHttp", "--stateful", "--sessionTimeout", "240000"]
