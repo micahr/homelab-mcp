@@ -2,7 +2,8 @@ FROM python:3.13-slim
 RUN apt-get update && apt-get install -y --no-install-recommends curl git && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt-get install -y nodejs
 RUN pip install --no-cache-dir git+https://github.com/bsahane/mcp-proxmox.git \
-    && pip install --no-cache-dir -r https://raw.githubusercontent.com/bsahane/mcp-proxmox/main/requirements.txt
+    && pip install --no-cache-dir -r https://raw.githubusercontent.com/bsahane/mcp-proxmox/main/requirements.txt \
+    && pip install --no-cache-dir "mcp<2"
 RUN npm install -g supergateway
 EXPOSE 8000
 CMD ["supergateway", "--stdio", "proxmox-mcp", "--port", "8000", "--outputTransport", "streamableHttp"]

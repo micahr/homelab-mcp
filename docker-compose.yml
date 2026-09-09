@@ -35,6 +35,7 @@ services:
       UNIFI_PASSWORD: ${UNIFI_PASSWORD}
       UNIFI_PORT: ${UNIFI_PORT:-443}
       UNIFI_SITE: ${UNIFI_SITE:-default}
+      UNIFI_MCP_HOST: "0.0.0.0"
       UNIFI_MCP_HTTP_ENABLED: "true"
       UNIFI_MCP_HTTP_FORCE: "true"
       UNIFI_MCP_ENABLE_DNS_REBINDING_PROTECTION: "false"
@@ -66,17 +67,18 @@ services:
       PROWLARR_API_KEY: ${PROWLARR_API_KEY}
 
   uptimekuma-mcp:
-    build:
-      context: https://github.com/lefty3382/uptime-kuma-mcp.git
+    # Replaced 2026-09-09: upstream lefty3382/uptime-kuma-mcp was deleted (404).
+    # davidfuchs/mcp-uptime-kuma targets Uptime Kuma v2 (you run 2.2.1).
+    image: davidfuchs/mcp-uptime-kuma:latest
     container_name: uptimekuma-mcp
     restart: unless-stopped
     ports:
-      - "3008:8487"
+      - "3008:3000"
     environment:
-      KUMA_URL: ${UPTIME_KUMA_URL}
-      KUMA_USERNAME: ${UPTIME_KUMA_USERNAME}
-      KUMA_PASSWORD: ${UPTIME_KUMA_PASSWORD}
-      MCP_PORT: 8487
+      UPTIME_KUMA_URL: ${UPTIME_KUMA_URL}
+      UPTIME_KUMA_USERNAME: ${UPTIME_KUMA_USERNAME}
+      UPTIME_KUMA_PASSWORD: ${UPTIME_KUMA_PASSWORD}
+    command: ["-t", "streamable-http"]
 
   pihole-mcp:
     build: ./pihole-mcp
