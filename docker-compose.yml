@@ -109,6 +109,22 @@ services:
       JELLYSEERR_API_KEY: ${JELLYSEERR_API_KEY}
       JELLYSEERR_TIMEOUT: ${JELLYSEERR_TIMEOUT:-15}
 
+  garmin-mcp:
+    build: ./garmin-mcp
+    container_name: garmin-mcp
+    restart: unless-stopped
+    ports:
+      - "3011:8000"
+    environment:
+      GARMIN_EMAIL: ${GARMIN_EMAIL}
+      GARMIN_PASSWORD: ${GARMIN_PASSWORD}
+    volumes:
+      # OAuth tokens: keeps the one-time MFA login from being repeated
+      - garmin_tokens:/root/.garminconnect
+      # Shared dir: downloaded FIT/GPX activities land here, and GPX routes
+      # dropped in here can be uploaded as Garmin Courses
+      - ${GARMIN_DATA_DIR:-./garmin-data}:/data
+
   # ── Monitoring Stack ────────────────────────────────────────────
 
   prometheus:
@@ -243,6 +259,7 @@ services:
       POLL_INTERVAL_SECONDS: "300"
 
 volumes:
+  garmin_tokens:
   prometheus_data:
   grafana_data:
   n8n_data:

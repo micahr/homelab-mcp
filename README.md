@@ -17,7 +17,8 @@ Full-stack homelab monitoring and automation system running on a single Docker-c
 │  ├── pihole-mcp     :3007  ← mcp-pihole via supergateway│
 │  ├── uptimekuma-mcp :3008  ← lefty3382/uptime-kuma-mcp │
 │  ├── jellyfin-mcp   :3009  ← jellyfin-mcp (jellyctrl)  │
-│  └── jellyseerr-mcp :3010  ← aserper/jellyseerr-mcp    │
+│  ├── jellyseerr-mcp :3010  ← aserper/jellyseerr-mcp    │
+│  └── garmin-mcp     :3011  ← Taxuspt/garmin_mcp        │
 │                                                         │
 │  Monitoring                                             │
 │  ├── prometheus      :9090  ← scrapes exporters         │
@@ -62,7 +63,8 @@ Full-stack homelab monitoring and automation system running on a single Docker-c
        "pihole":         { "url": "http://<lxc-ip>:3007/mcp" },
        "uptimekuma":     { "url": "http://<lxc-ip>:3008/mcp" },
        "jellyfin":       { "url": "http://<lxc-ip>:3009/mcp" },
-       "jellyseerr":     { "url": "http://<lxc-ip>:3010/mcp" }
+       "jellyseerr":     { "url": "http://<lxc-ip>:3010/mcp" },
+       "garmin":         { "url": "http://<lxc-ip>:3011/mcp" }
      }
    }
    ```
@@ -76,7 +78,22 @@ Full-stack homelab monitoring and automation system running on a single Docker-c
 6. **Import n8n workflows:**
    Open n8n at `http://<lxc-ip>:5678`, import JSONs from `n8n/workflows/`.
 
-7. **Add HA automations:**
+7. **Authenticate Garmin (one-time):**
+   Garmin has no official personal API, so the MCP server logs in as you and
+   caches OAuth tokens. This login is interactive because Garmin may demand an
+   MFA code, so it cannot be done from the compose file:
+
+   ```bash
+   docker compose run --rm garmin-mcp garmin-mcp-auth
+   ```
+
+   Tokens are written to the `garmin_tokens` volume and last roughly a year.
+   Note the container still **starts and serves HTTP without them** — it looks
+   healthy and lists all 150 tools, but every tool call fails until this login
+   has been run once. Re-run it when tokens expire; `docker compose logs
+   garmin-mcp` names the problem explicitly.
+
+8. **Add HA automations:**
    Copy `homeassistant/automations.yaml` entries into your Home Assistant config and update entity IDs.
 
 ## Services
@@ -92,6 +109,7 @@ Full-stack homelab monitoring and automation system running on a single Docker-c
 | uptimekuma-mcp | 3008 | MCP server for Uptime Kuma |
 | jellyfin-mcp | 3009 | MCP server for Jellyfin (56 tools) |
 | jellyseerr-mcp | 3010 | MCP server for Jellyseerr requests |
+| garmin-mcp | 3011 | MCP server for Garmin Connect (150 tools) |
 | grafana | 3000 | Dashboards |
 | prometheus | 9090 | Metrics collection |
 | alertmanager | 9093 | Alert routing |
