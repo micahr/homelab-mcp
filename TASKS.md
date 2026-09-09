@@ -21,6 +21,7 @@ Everything runs on a **single Docker-capable LXC on Proxmox** via `docker-compos
 - [x] **Uptime Kuma MCP** — [lefty3382/uptime-kuma-mcp](https://github.com/lefty3382/uptime-kuma-mcp), runs on port 3008
 - [x] **Jellyfin MCP** — [jellyfin-mcp](https://github.com/lidless-labs/jellyctrl) (56 tools), runs on port 3009
 - [x] **Jellyseerr MCP** — [aserper/jellyseerr-mcp](https://github.com/aserper/jellyseerr-mcp), runs on port 3010
+- [x] **Garmin Connect MCP** — [Taxuspt/garmin_mcp](https://github.com/Taxuspt/garmin_mcp) (150 tools), runs on port 3011
 
 ### Monitoring Stack
 - [x] **Prometheus** with scrape configs for pve-exporter, node-exporter, unpoller
@@ -61,6 +62,7 @@ Everything runs on a **single Docker-capable LXC on Proxmox** via `docker-compos
 ## Remaining / Future
 
 - [ ] Deploy stack to LXC and verify all services start
+- [ ] Run one-time `docker compose run --rm garmin-mcp garmin-mcp-auth` to seed Garmin OAuth tokens
 - [ ] Update Prometheus placeholder IPs with real infrastructure IPs
 - [ ] Update HA automation entity IDs with real entities
 - [ ] Import n8n workflows and configure credentials

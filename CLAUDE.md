@@ -37,6 +37,7 @@ No test runner or linter is configured.
 - **uptimekuma-mcp** (port 3008) — [lefty3382/uptime-kuma-mcp](https://github.com/lefty3382/uptime-kuma-mcp), uptime monitors
 - **jellyfin-mcp** (port 3009) — [jellyfin-mcp](https://github.com/lidless-labs/jellyctrl) via supergateway, 56 Jellyfin tools
 - **jellyseerr-mcp** (port 3010) — [aserper/jellyseerr-mcp](https://github.com/aserper/jellyseerr-mcp) via supergateway, media requests
+- **garmin-mcp** (port 3011) — [Taxuspt/garmin_mcp](https://github.com/Taxuspt/garmin_mcp), 150 tools; activity downloads (FIT/GPX/TCX/CSV), workout builders, and GPX courses. Serves streamable HTTP natively, so no supergateway wrapper. Requires a one-time `garmin-mcp-auth` login (MFA); tokens persist in the `garmin_tokens` volume.
 
 Claude Desktop connects to these via `http://<lxc-ip>:<port>/mcp`.
 
